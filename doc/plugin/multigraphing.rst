@@ -77,6 +77,7 @@ The setup is done in the usual way, with graph_title and other configuration ite
 Then for each of the interfaces the plugin emits these configuration items (interface number is indexed with $if in this, and should be replaced with name or number by the plugin itself, likewise for the other settings such as $alias, $speed and $warn. ${graph_period} is substituted by Munin. 
 
 ::
+
    multigraph if_bytes.if_$if
 
    graph_title Interface $alias traffic
@@ -109,7 +110,7 @@ Then for each of the interfaces the plugin emits these configuration items (inte
    graph_vlabel bits in (-) / out (+) per \${graph_period}
    graph_category network
    graph_info This graph shows errors for the \"$alias\" network interface.
-   send.info Errors in outgoing/incomming traffic on this interface.
+   send.info Errors in outgoing/incoming traffic on this interface.
    recv.label recv
    recv.type DERIVE
    recv.graph no

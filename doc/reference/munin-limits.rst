@@ -75,8 +75,11 @@ OPTIONS
 
 .. option:: --debug
 
-   If set, view debug messages. Can be negated with --nodebug.
-   [--nodebug]
+   Log debug messages.
+
+.. option:: --screen
+
+   If set, log messages to STDERR on the screen.
 
 FILES
 =====
@@ -89,5 +92,7 @@ FILES
 
 SEE ALSO
 ========
+
+See :ref:`munin` for an overview over munin.
 
 :ref:`munin.conf`

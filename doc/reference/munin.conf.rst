@@ -1,3 +1,4 @@
+
 .. _munin.conf:
 
 .. program:: munin.conf
@@ -11,7 +12,9 @@ DESCRIPTION
 
 This is the configuration file for the munin master. It is used by
 :ref:`munin-update`, :ref:`munin-graph`, :ref:`munin-limits`.
-:ref:`munin-html`, :ref:`munin-cgi-graph` and :ref:`munin-cgi-html`.
+:ref:`munin-html`.
+
+.. _master-conf-global-directives:
 
 GLOBAL DIRECTIVES
 =================
@@ -43,7 +46,7 @@ otherwise.
 .. option:: tmpldir <path>
 
    Directories for templates used by :ref:`munin-html` and
-   :ref:`munin-cgi-html` to generate HTML pages. Default
+   :ref:`munin-httpd` to generate HTML pages. Default
    /etc/munin/templates
 
 .. option:: fork <yes|no>
@@ -57,26 +60,34 @@ otherwise.
 
    Affects: :ref:`munin-update`
 
+.. option:: timeout <seconds>
+
+   This directive determines how long :ref:`munin-update` allows a worker to
+   fetch data from a single node.  Default is "180".
+
+   Affects: :ref:`munin-update`
+
 .. option:: palette <default|old>
 
-   The palette used by :ref:`munin-graph` and :ref:`munin-cgi-graph`
-   to colour the graphs. The "default" palete has more colours and
+   The palette used by :ref:`munin-graph` and :ref:`munin-httpd`
+   to color the graphs. The "default" palette has more colors and
    better contrast than the "old" palette.
 
    Affects: :ref:`munin-graph`
 
 .. option:: custom_palette rrggbb rrggbb ...
 
-   The user defined custom palette used by :ref:`munin-graph` and :ref:`munin-cgi-graph`
-   to colour the graphs. This option override existing palette.
-   The palette must be space-separeted 24-bit hex color code.
+   The user defined custom palette used by :ref:`munin-graph` and
+   :ref:`munin-httpd` to color the graphs. This option override
+   existing palette.  The palette must be space-separated 24-bit hex
+   color code.
 
    Affects: :ref:`munin-graph`
    
 .. option:: graph_data_size <normal|huge>
 
    This directive sets the resolution of the RRD files that are
-   created by :ref:`munin-graph` and :ref:`munin-cgi-graph`.
+   created by :ref:`munin-graph` and :ref:`munin-httpd`.
 
    Default is "normal".
 
@@ -92,9 +103,8 @@ otherwise.
    If set to "cron", :ref:`munin-graph` will graph all services on all
    nodes every run interval.
 
-   If set to "cgi", :ref:`munin-graph` will do nothing. To generate
-   graphs you must then configure a web server to run
-   :ref:`munin-cgi-graph` instead.
+   If set to "cgi", :ref:`munin-graph` will do nothing. This is the
+   proper setting when you run :ref:`munin-httpd`.
 
    Affects: :ref:`munin-graph`
 
@@ -105,9 +115,24 @@ otherwise.
    If set to "cron", :ref:`munin-html` will recreate all html pages
    every run interval.
 
-   If set to "cgi", :ref:`munin-html` will do nothing. To generate
-   html pages you must configure a web server to run
-   :ref:`munin-cgi-graph` instead.
+   If set to "cgi", :ref:`munin-html` will do nothing.  This is the
+   proper setting when you run :ref:`munin-httpd`.
+
+.. _directive-contact:
+
+.. option:: contact.<contact name>.command <command>
+
+   Define which contact command to run.
+
+.. option:: contact.<contact name>.text <text>
+
+   Text to pipe into the command.
+
+.. option:: contact.<contact name>.max_messages <number>
+
+   Close (and reopen) command after given number of messages. E.g. if set to 1 for an email target,
+   Munin sends 1 email for each warning/critical. Useful when relaying messages to external processes
+   that may handle a limited number of simultaneous warnings.
 
 .. index::
    pair: example; munin.conf
@@ -180,6 +205,13 @@ only to that node.
 
    If set, changes the name by which the node presents itself when warning through munin-limits.
 
+.. option:: ignore_unknown <yes|no>
+
+   If set, ignore any unknown values reported by the node. Allowed values are "yes"
+   and "no". Defaults to "no".
+
+   Useful when a node is expected to be off-line frequently.
+
 .. option:: update <yes|no>
 
    Fetch data from this node with :ref:`munin-update`? Allowed values are "yes" and "no". Defaults
@@ -195,6 +227,8 @@ These directives follow a node definition and are of the form "plugin.directive 
 
 Using these directives you can override various directives for a plugin, such as its contacts, and
 can also be used to create graphs containing data from other plugins.
+
+.. _master-conf-field-directives:
 
 FIELD DIRECTIVES
 ----------------
@@ -270,3 +304,14 @@ Connect to munin-nodes on a remote site, through a bastion host, using ssh.
 
   [www.site2.example.org]
     address ssh://bastion.site2.example.org/bin/nc www.site2.example.org 4949
+
+Hint: When using the ssh\:// transport, you can configure how ssh
+behaves by editing `~munin/.ssh/config`.  See the :ref:`ssh transport
+configuration examples <example-transport-ssh>`.
+
+SEE ALSO
+========
+
+See :ref:`munin` for an overview over munin.
+
+:ref:`example-transport-ssh`

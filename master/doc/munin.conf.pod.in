@@ -164,9 +164,10 @@ certificate can be stored in the same file.  Affects: munin-update.
 
 =item B<tls_certificate> <value>
 
-This directive sets the location of the TLS certificate to be used for
-TLS.  Default is @@CONFDIR@@/munin.pem.  The private key and
-certificate can be stored in the same file.  Affects: munin-update.
+This directive sets the location of the TLS certificate and optional
+intermediate CA certificates to be used for TLS.  Default is
+@@CONFDIR@@/munin.pem.  The private key and certificate can be
+stored in the same file.  Affects: munin-update.
 
 =item B<tls_ca_certificate> <value>
 
@@ -282,6 +283,15 @@ Used by "munin-limits".
 
 If set, changes the name by which the node presents itself when
 warning through munin-limits.
+
+=item B<ignore_unknown> I<value>
+
+Used by "munin-limits".
+
+If set, ignore any unknown values reported by the node. Allowed values are "yes"
+and "no". Defaults to "no".
+
+Useful when a node is expected to be off-line frequently.
 
 =item B<update> I<value>
 

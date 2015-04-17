@@ -1,56 +1,58 @@
-use Test::More tests => 6;
+use warnings;
 use strict;
 
-use Cwd qw(cwd);
+use Test::More tests => 7;
 
-my $cwd = cwd();
-my $PREFIX = "$cwd/t/install";
-my $run    = "$PREFIX/sbin/munin-run --sconfdir=$cwd/t/plugin-conf.d";
+require_ok('script/munin-run');
 
-sub run {
-    my $plugin = shift or die "run(): plugin required\n";
+use Munin::Node::Config;
+my $config = Munin::Node::Config->instance();
 
-    my @lines = `$run $plugin` or warn "No output from '$plugin' plugin\n";
-    warn "Error running '$plugin' plugin\n", @lines if $?;
+### parse_args
 
-    my %ret;
-    for (@lines) {
-	if (/^(\w+)\.(\w+)\s+(.+)/) { # unfuck cperl-mode +
-	    $ret{$1}{$2} = $3;
-	}
-	elsif (/(\w+)\s+(.+)/) {
-	    $ret{$1} = $2;
-	}
-    }
-    return %ret;
+# check all the various parameters are set correctly in $config
+{
+    $config->reinitialize( {} );
+
+    local @ARGV = qw(
+        --config     config_file
+        --servicedir service_directory
+        --sconfdir   service_config_directory
+        --sconffile  service_config_file
+        --debug
+        --paranoia
+        --pidebug
+        plugin config
+    );
+
+    my ( $plugin, $argument ) = parse_args();
+
+    is_deeply(
+        $config,
+        {   conffile  => 'config_file',
+            sconfdir  => 'service_config_directory',
+            sconffile => 'service_config_file',
+            paranoia  => 1,
+            DEBUG     => 1,
+        },
+        'Command-line arguments set the correct configuration items'
+    );
+
+    is( $plugin,   'plugin', 'Plugin name is read from @ARGV' );
+    is( $argument, 'config', 'Argument is read from @ARGV' );
 }
-
-SKIP: {
-    skip "need root for uid/gid tests", 4 if $>;
-    skip "nobody/nogroup missing", 4
-      unless getpwnam('nobody') && getgrnam('nogroup');
-
-    my %id = run('id_default');
-    is($id{uid}{extinfo}, 'nobody', "default user");
-    like($id{gid}{extinfo}, qr/^nogroup/, "default group");
-    
-    my %id = run('id_root');
-    is($id{uid}{value}, 0, 'user override');
-    like($id{gid}{extinfo}, qr/\broot\b/, 'group override');
+{
+    local @ARGV = qw(plugin);
+    my ( $plugin, $argument ) = parse_args();
+    is( $argument, undef, 'No argument was given' );
 }
-
-my %env = run('env');
-is_deeply(\%env,
-	  { count      => { value   => 1 },
-	    munin_test => { value   => 4,
-			    extinfo => 'test',
-			  },
-	  },
-	  'environment variables');
-
-TODO: {
-    local $TODO = "munin-run doesn't handle this";
-
-    my %config = run('env config');
-    is($config{host_name}, 'test.example.com', 'host_name override');
+{
+    local @ARGV = ( 'plugin', 'bad#argument' );
+    eval { parse_args() };
+    like( $@, qr/bad#argument/, 'Invalid argument causes a fatal error' );
+}
+{
+    local @ARGV = qw(plugin update);
+    my ( $plugin, $argument ) = parse_args();
+    is( $argument, 'update', 'Unknown argument is ok' );
 }

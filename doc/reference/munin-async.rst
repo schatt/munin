@@ -14,6 +14,8 @@ The munin async clients reads from a spool directory written by
 
 It can optionally request a cleanup of this directory.
 
+.. _spoolfetch:
+
 OPTIONS
 =======
 
@@ -70,5 +72,6 @@ directory instead of connecting to the node.
 SEE ALSO
 ========
 
-See also :ref:`node-async` for more information and examples of how to
-configure munin-async.
+See :ref:`munin` for an overview over munin.
+
+See also :ref:`node-async` for more information and examples of how to configure munin-async.

@@ -31,8 +31,11 @@ OPTIONS
 
 .. option:: --debug
 
-   If set, log debug messages. Can be negated with --nodebug
-   [--nodebug]
+   Log debug messages.
+
+.. option:: --screen
+
+   If set, log messages to STDERR on the screen.
 
 .. option:: --fork
 
@@ -64,5 +67,7 @@ OPTIONS
 
 SEE ALSO
 ========
+
+See :ref:`munin` for an overview over munin.
 
 :ref:`munin-cron`

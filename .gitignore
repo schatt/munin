@@ -1,11 +1,29 @@
-*/Build
-*/_build/
-*/blib/
-build-*-stamp
-build/
-.*.swp
+# Backups
+*~
+*.bak
+
+# Perl Builded files
+/blib/
+/Build
+/build/
+/_build/
+/MANIFEST
+/META.json
+/META.yml
+/MYMETA.json
+/MYMETA.yml
+
+# Generated files (foo.PL -> foo)
+lib/Munin/Common/Defaults.pm
+lib/Munin.pm
+etc/munin.conf.sample
+etc/munin-node.conf.sample
+script/munin-cron
+
+
+# Dev Sandbox
 /sandbox/
-MYMETA.*
-SPOOL-META
-/RELEASE
-Build.bat
+
+# IDE files
+.idea/
+

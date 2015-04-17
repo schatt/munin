@@ -33,7 +33,7 @@ OPTIONS
 
 .. option:: --retain <count>
 
-   Number of interval files to retai [7]
+   Number of interval files to retain [7]
 
 .. option:: --nocleanup
 
@@ -54,5 +54,6 @@ OPTIONS
 SEE ALSO
 ========
 
-See also :ref:`node-async` for more information and examples of how to
-configure munin-asyncd.
+See :ref:`munin` for an overview over munin.
+
+See also :ref:`node-async` for more information and examples of how to configure munin-asyncd.
